@@ -13,7 +13,7 @@ func formatBundle(regexp, name string) string {
 	return fmt.Sprintf("[[bundle]]\nregexp = %q\nname = %q", regexp, name)
 }
 
-type Visitor struct {}
+type Visitor struct{}
 
 func (v Visitor) Visit(node ast.Node) ast.Visitor {
 	callExpr, ok := node.(*ast.CallExpr)
@@ -46,9 +46,9 @@ func (v Visitor) Visit(node ast.Node) ast.Visitor {
 }
 
 func main() {
-    fset := token.NewFileSet()
-    f, _ := parser.ParseFile(fset, "./example/main.go", nil, parser.Mode(0))
-		v := Visitor{}
+	fset := token.NewFileSet()
+	f, _ := parser.ParseFile(fset, "./example/main.go", nil, parser.Mode(0))
+	v := Visitor{}
 
-		ast.Walk(v, f)
+	ast.Walk(v, f)
 }
