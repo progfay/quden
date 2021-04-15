@@ -5,12 +5,28 @@ import (
 	"go/ast"
 	"go/token"
 	"io"
+	"net/http"
 	"strconv"
 	"strings"
 )
 
 type visitor struct{
 	w io.Writer
+}
+
+func isHTTPMethod(str string) bool {
+	methodSet := map[string]struct{}{
+		http.MethodGet:     {},
+		http.MethodHead:    {},
+		http.MethodPost:    {},
+		http.MethodPut:     {},
+		http.MethodDelete:  {},
+		http.MethodConnect: {},
+		http.MethodOptions: {},
+		http.MethodTrace:   {},
+	}
+	_, ok := methodSet[str]
+	return ok
 }
 
 func New(w io.Writer) *visitor {
@@ -41,8 +57,11 @@ func (v visitor) Visit(node ast.Node) ast.Visitor {
 		return v
 	}
 
-	name := selectorExpr.Sel.Name
+	name := strings.ToUpper(selectorExpr.Sel.Name)
+	if !isHTTPMethod(name) {
+		return v
+	}
 
-	fmt.Fprintf(v.w, "%s %s\n", strings.ToUpper(name), path)
+	fmt.Fprintf(v.w, "%s %s\n", name, path)
 	return v
 }
