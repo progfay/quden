@@ -15,11 +15,16 @@ func formatBundle(regexp, name string) string {
 }
 
 func Run(w io.Writer, files []string) {
-	v := visitor.New(w)
+	v := visitor.New()
 
 	for _, file := range files {
 		fset := token.NewFileSet()
 		f, _ := parser.ParseFile(fset, file, nil, parser.Mode(0))
 		ast.Walk(v, f)
+	}
+
+	endpoints := v.GetEndpoints()
+	for _, endpoint := range endpoints {
+		fmt.Fprintln(w, endpoint)
 	}
 }

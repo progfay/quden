@@ -2,29 +2,30 @@ package visitor
 
 import (
 	"go/ast"
-	"io"
 
 	"github.com/progfay/quden/echo"
 	"github.com/progfay/quden/endpoint"
 )
 
 type visitor struct {
-	w         io.Writer
-	endpoints []*endpoint.Endpoint
+	endpoints []endpoint.Endpoint
 }
 
-func New(w io.Writer) *visitor {
+func New() *visitor {
 	return &visitor{
-		w:         w,
-		endpoints: make([]*endpoint.Endpoint, 0),
+		endpoints: make([]endpoint.Endpoint, 0),
 	}
 }
 
-func (v visitor) Visit(node ast.Node) ast.Visitor {
+func (v *visitor) Visit(node ast.Node) ast.Visitor {
 	endpoint := echo.NodeToEndpoint(node)
 	if endpoint != nil {
-		v.endpoints = append(v.endpoints, endpoint)
+		v.endpoints = append(v.endpoints, *endpoint)
 	}
 
 	return v
+}
+
+func (v *visitor) GetEndpoints() []endpoint.Endpoint {
+	return v.endpoints
 }
