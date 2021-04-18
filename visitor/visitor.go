@@ -11,7 +11,7 @@ import (
 var frameworks = []*framework.Framework{echo.New()}
 
 type visitor struct {
-	endpoints  []endpoint.Endpoint
+	endpoints      []endpoint.Endpoint
 	nodeConverters []framework.NodeConverter
 }
 

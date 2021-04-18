@@ -21,7 +21,7 @@ func isRegisterMethod(name string) bool {
 	return false
 }
 
-type converter struct {}
+type converter struct{}
 
 func (converter) ToEndpoint(node ast.Node) *endpoint.Endpoint {
 	callExpr, ok := node.(*ast.CallExpr)

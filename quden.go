@@ -24,11 +24,11 @@ var frameworks = []*framework.Framework{
 
 func findMatchFramework(path string) *framework.Framework {
 	for _, framework := range frameworks {
-				if framework.MatchImportPath(path) {
-					return framework
-				}
-			}
-			return nil
+		if framework.MatchImportPath(path) {
+			return framework
+		}
+	}
+	return nil
 }
 
 func Run(w io.Writer, files []string) {

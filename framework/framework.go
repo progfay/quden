@@ -7,7 +7,7 @@ import (
 )
 
 type Framework struct {
-	MatchImportPath func(path string) bool
+	MatchImportPath  func(path string) bool
 	NewNodeConverter func() NodeConverter
 }
 
