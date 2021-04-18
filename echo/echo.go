@@ -7,9 +7,18 @@ import (
 	"strings"
 
 	"github.com/progfay/quden/endpoint"
+	"github.com/progfay/quden/framework"
 )
 
 var registerMethods = []string{"GET", "HEAD", "POST", "PUT", "DELETE", "CONNECT", "OPTIONS", "TRACE"}
+
+type echo struct {}
+
+type converter struct {}
+
+func New() framework.Framework {
+	return echo{}
+}
 
 func isRegisterMethod(name string) bool {
 	for _, method := range registerMethods {
@@ -20,7 +29,7 @@ func isRegisterMethod(name string) bool {
 	return false
 }
 
-func NodeToEndpoint(node ast.Node) *endpoint.Endpoint {
+func (converter) ToEndpoint(node ast.Node) *endpoint.Endpoint {
 	callExpr, ok := node.(*ast.CallExpr)
 	if !ok {
 		return nil
@@ -51,4 +60,12 @@ func NodeToEndpoint(node ast.Node) *endpoint.Endpoint {
 	}
 
 	return endpoint.New(name, path)
+}
+
+func (echo) MatchImportPath(path string) bool {
+	return strings.HasPrefix(path, "github.com/labstack/echo/")
+}
+
+func (echo) NewNodeConverter() framework.NodeConverter {
+	return converter{}
 }

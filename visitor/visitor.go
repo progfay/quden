@@ -5,10 +5,14 @@ import (
 
 	"github.com/progfay/quden/echo"
 	"github.com/progfay/quden/endpoint"
+	"github.com/progfay/quden/framework"
 )
 
+var frameworks = []framework.Framework{echo.New()}
+
 type visitor struct {
-	endpoints []endpoint.Endpoint
+	endpoints  []endpoint.Endpoint
+	nodeConverters []framework.NodeConverter
 }
 
 func New() *visitor {
@@ -17,10 +21,17 @@ func New() *visitor {
 	}
 }
 
+func (v *visitor) AddNodeConverter(nodeConverter framework.NodeConverter) {
+	v.nodeConverters = append(v.nodeConverters, nodeConverter)
+}
+
 func (v *visitor) Visit(node ast.Node) ast.Visitor {
-	endpoint := echo.NodeToEndpoint(node)
-	if endpoint != nil {
-		v.endpoints = append(v.endpoints, *endpoint)
+	for _, nodeConverter := range v.nodeConverters {
+		endpoint := nodeConverter.ToEndpoint(node)
+		if endpoint != nil {
+			v.endpoints = append(v.endpoints, *endpoint)
+			return v
+		}
 	}
 
 	return v
