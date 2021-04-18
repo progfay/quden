@@ -3,12 +3,9 @@ package visitor
 import (
 	"go/ast"
 
-	"github.com/progfay/quden/echo"
 	"github.com/progfay/quden/endpoint"
 	"github.com/progfay/quden/framework"
 )
-
-var frameworks = []*framework.Framework{echo.New()}
 
 type visitor struct {
 	endpoints      []endpoint.Endpoint

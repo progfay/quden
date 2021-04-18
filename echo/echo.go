@@ -10,7 +10,7 @@ import (
 	"github.com/progfay/quden/framework"
 )
 
-var registerMethods = []string{"GET", "HEAD", "POST", "PUT", "DELETE", "CONNECT", "OPTIONS", "TRACE"}
+var registerMethods = []string{"GET", "HEAD", "POST", "PUT", "DELETE", "CONNECT", "OPTIONS", "TRACE", "PATCH"}
 
 func isRegisterMethod(name string) bool {
 	for _, method := range registerMethods {
@@ -48,7 +48,7 @@ func (converter) ToEndpoint(node ast.Node) *endpoint.Endpoint {
 		return nil
 	}
 
-	name := strings.ToUpper(selectorExpr.Sel.Name)
+	name := selectorExpr.Sel.Name
 	if !isRegisterMethod(name) {
 		return nil
 	}
