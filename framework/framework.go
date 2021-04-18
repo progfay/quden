@@ -6,9 +6,9 @@ import (
 	"github.com/progfay/quden/endpoint"
 )
 
-type Framework interface {
-	MatchImportPath(path string) bool
-	NewNodeConverter() NodeConverter
+type Framework struct {
+	MatchImportPath func(path string) bool
+	NewNodeConverter func() NodeConverter
 }
 
 type NodeConverter interface {

@@ -18,11 +18,11 @@ func formatBundle(regexp, name string) string {
 	return fmt.Sprintf("[[bundle]]\nregexp = %q\nname = %q", regexp, name)
 }
 
-var frameworks = []framework.Framework{
+var frameworks = []*framework.Framework{
 	echo.New(),
 }
 
-func findMatchFramework(path string) framework.Framework {
+func findMatchFramework(path string) *framework.Framework {
 	for _, framework := range frameworks {
 				if framework.MatchImportPath(path) {
 					return framework

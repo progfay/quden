@@ -12,14 +12,6 @@ import (
 
 var registerMethods = []string{"GET", "HEAD", "POST", "PUT", "DELETE", "CONNECT", "OPTIONS", "TRACE"}
 
-type echo struct {}
-
-type converter struct {}
-
-func New() framework.Framework {
-	return echo{}
-}
-
 func isRegisterMethod(name string) bool {
 	for _, method := range registerMethods {
 		if method == name {
@@ -28,6 +20,8 @@ func isRegisterMethod(name string) bool {
 	}
 	return false
 }
+
+type converter struct {}
 
 func (converter) ToEndpoint(node ast.Node) *endpoint.Endpoint {
 	callExpr, ok := node.(*ast.CallExpr)
@@ -62,10 +56,13 @@ func (converter) ToEndpoint(node ast.Node) *endpoint.Endpoint {
 	return endpoint.New(name, path)
 }
 
-func (echo) MatchImportPath(path string) bool {
-	return strings.HasPrefix(path, "github.com/labstack/echo/")
-}
-
-func (echo) NewNodeConverter() framework.NodeConverter {
-	return converter{}
+func New() *framework.Framework {
+	return &framework.Framework{
+		MatchImportPath: func(path string) bool {
+			return strings.HasPrefix(path, "github.com/labstack/echo/")
+		},
+		NewNodeConverter: func() framework.NodeConverter {
+			return converter{}
+		},
+	}
 }

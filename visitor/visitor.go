@@ -8,7 +8,7 @@ import (
 	"github.com/progfay/quden/framework"
 )
 
-var frameworks = []framework.Framework{echo.New()}
+var frameworks = []*framework.Framework{echo.New()}
 
 type visitor struct {
 	endpoints  []endpoint.Endpoint
