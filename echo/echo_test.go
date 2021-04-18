@@ -18,11 +18,11 @@ func Test_MatchImportPath(t *testing.T) {
 		want bool
 	}{
 		{
-			in: "github.com/labstack/echo/v4",
+			in:   "github.com/labstack/echo/v4",
 			want: true,
 		},
 		{
-			in: "fmt",
+			in:   "fmt",
 			want: false,
 		},
 	} {
@@ -45,22 +45,22 @@ func Test_NodeConverter_ToEndpoint(t *testing.T) {
 	}{
 		{
 			name: "Static",
-			in: `e.GET("/users", handler)`,
+			in:   `e.GET("/users", handler)`,
 			want: endpoint.New("GET", "/users"),
 		},
 		{
 			name: "Param",
-			in: `e.DELETE("/users/:user_id", handler)`,
+			in:   `e.DELETE("/users/:user_id", handler)`,
 			want: endpoint.New("DELETE", "/users/:user_id"),
 		},
 		{
 			name: "Match Any",
-			in: `e.POST("/users/files/*", handler)`,
+			in:   `e.POST("/users/files/*", handler)`,
 			want: endpoint.New("POST", "/users/files/*"),
 		},
 		{
 			name: "Non API Endpoint Register",
-			in: `fmt.Println("/users")`,
+			in:   `fmt.Println("/users")`,
 			want: nil,
 		},
 	} {

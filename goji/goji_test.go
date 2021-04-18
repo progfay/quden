@@ -18,11 +18,11 @@ func Test_MatchImportPath(t *testing.T) {
 		want bool
 	}{
 		{
-			in: "goji.io/pat",
+			in:   "goji.io/pat",
 			want: true,
 		},
 		{
-			in: "fmt",
+			in:   "fmt",
 			want: false,
 		},
 	} {
@@ -45,22 +45,22 @@ func Test_NodeConverter_ToEndpoint(t *testing.T) {
 	}{
 		{
 			name: "Static Paths",
-			in: `pat.Get("/users")`,
+			in:   `pat.Get("/users")`,
 			want: endpoint.New("GET", "/users"),
 		},
 		{
 			name: "Named Matches",
-			in: `pat.Delete("/users/:user_id")`,
+			in:   `pat.Delete("/users/:user_id")`,
 			want: endpoint.New("DELETE", "/users/:user_id"),
 		},
 		{
 			name: "Prefix Matches",
-			in: `pat.Post("/users/files/*")`,
+			in:   `pat.Post("/users/files/*")`,
 			want: endpoint.New("POST", "/users/files/*"),
 		},
 		{
 			name: "Non API Endpoint Register",
-			in: `fmt.Println("/users")`,
+			in:   `fmt.Println("/users")`,
 			want: nil,
 		},
 	} {
