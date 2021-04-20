@@ -6,8 +6,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/progfay/quden/endpoint"
-	"github.com/progfay/quden/framework"
+	"github.com/progfay/quden/util"
 )
 
 var registerMethods = []string{"Get", "Head", "Post", "Put", "Delete", "CONNECT", "OPTIONS", "Patch"}
@@ -22,7 +21,7 @@ func isRegisterMethod(name string) bool {
 }
 
 type visitor struct{
-	endpoints []endpoint.Endpoint
+	endpoints []util.Endpoint
 }
 
 func (v *visitor) Visit(node ast.Node) ast.Visitor {
@@ -60,7 +59,7 @@ func (v *visitor) Visit(node ast.Node) ast.Visitor {
 		return v
 	}
 
-	v.endpoints = append(v.endpoints, endpoint.New(strings.ToUpper(name), path, path))
+	v.endpoints = append(v.endpoints, util.NewEndpoint(strings.ToUpper(name), path, path))
 
 	return v
 }
@@ -71,13 +70,13 @@ func (goji) MatchImportPath(path string) bool {
 	return path == "goji.io/pat"
 }
 
-func (goji) Extract(node ast.Node) []endpoint.Endpoint {
+func (goji) Extract(node ast.Node) []util.Endpoint {
 	var v visitor
 	ast.Walk(&v, node)
 	// Sort
 	return v.endpoints
 }
 
-func New() framework.Framework {
+func New() util.Framework {
 	return goji{}
 }

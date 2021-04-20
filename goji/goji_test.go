@@ -6,8 +6,8 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/progfay/quden/endpoint"
 	"github.com/progfay/quden/goji"
+	"github.com/progfay/quden/util"
 )
 
 func Test_MatchImportPath(t *testing.T) {
@@ -41,22 +41,22 @@ func Test_NodeConverter_ToEndpoint(t *testing.T) {
 	for _, testcase := range []struct {
 		name string
 		in   string
-		want []endpoint.Endpoint
+		want []util.Endpoint
 	}{
 		{
 			name: "Static Paths",
 			in:   `pat.Get("/users")`,
-			want: []endpoint.Endpoint{endpoint.New("GET", "/users", "/users")},
+			want: []util.Endpoint{util.NewEndpoint("GET", "/users", "/users")},
 		},
 		{
 			name: "Named Matches",
 			in:   `pat.Delete("/users/:user_id")`,
-			want: []endpoint.Endpoint{endpoint.New("DELETE", "/users/:user_id", "/users/:user_id")},
+			want: []util.Endpoint{util.NewEndpoint("DELETE", "/users/:user_id", "/users/:user_id")},
 		},
 		{
 			name: "Prefix Matches",
 			in:   `pat.Post("/users/files/*")`,
-			want: []endpoint.Endpoint{endpoint.New("POST", "/users/files/*", "/users/files/*")},
+			want: []util.Endpoint{util.NewEndpoint("POST", "/users/files/*", "/users/files/*")},
 		},
 		{
 			name: "Non API Endpoint Register",

@@ -1,6 +1,9 @@
-package endpoint
+package util
 
-import "fmt"
+import (
+	"fmt"
+	"go/ast"
+)
 
 type Endpoint struct {
 	Method string
@@ -8,7 +11,7 @@ type Endpoint struct {
 	RegExp string
 }
 
-func New(method, path, regexp string) Endpoint {
+func NewEndpoint(method, path, regexp string) Endpoint {
 	return Endpoint{
 		Method: method,
 		Path:   path,
@@ -18,4 +21,9 @@ func New(method, path, regexp string) Endpoint {
 
 func (e *Endpoint) String() string {
 	return fmt.Sprintf("%s %s", e.Method, e.Path)
+}
+
+type Framework interface {
+	MatchImportPath(path string) bool
+	Extract(node ast.Node) []Endpoint
 }

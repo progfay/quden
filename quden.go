@@ -9,23 +9,23 @@ import (
 	"strconv"
 
 	"github.com/progfay/quden/echo"
-	"github.com/progfay/quden/framework"
 	"github.com/progfay/quden/goji"
+	"github.com/progfay/quden/util"
 )
 
 func formatBundle(regexp, name string) string {
 	return fmt.Sprintf("[[bundle]]\nregexp = %q\nname = %q", regexp, name)
 }
 
-var frameworks = []framework.Framework{
+var utils = []util.Framework{
 	echo.New(),
 	goji.New(),
 }
 
-func findMatchFramework(path string) framework.Framework {
-	for _, framework := range frameworks {
-		if framework.MatchImportPath(path) {
-			return framework
+func findMatchFramework(path string) util.Framework {
+	for _, util := range utils {
+		if util.MatchImportPath(path) {
+			return util
 		}
 	}
 	return nil
@@ -43,9 +43,9 @@ func Run(w io.Writer, files []string) {
 				continue
 			}
 
-			framework := findMatchFramework(path)
-			if framework != nil {
-				endpoints := framework.Extract(f)
+			util := findMatchFramework(path)
+			if util != nil {
+				endpoints := util.Extract(f)
 				for _, endpoint := range endpoints {
 					fmt.Fprintln(w, endpoint.String())
 				}

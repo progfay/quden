@@ -6,8 +6,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/progfay/quden/endpoint"
-	"github.com/progfay/quden/framework"
+	"github.com/progfay/quden/util"
 )
 
 var registerMethods = []string{"GET", "HEAD", "POST", "PUT", "DELETE", "CONNECT", "OPTIONS", "TRACE", "PATCH"}
@@ -22,7 +21,7 @@ func isRegisterMethod(name string) bool {
 }
 
 type visitor struct{
-	endpoints []endpoint.Endpoint
+	utils []util.Endpoint
 }
 
 func (v *visitor) Visit(node ast.Node) ast.Visitor {
@@ -55,7 +54,7 @@ func (v *visitor) Visit(node ast.Node) ast.Visitor {
 		return v
 	}
 
-	v.endpoints = append(v.endpoints, endpoint.New(name, path, path))
+	v.utils = append(v.utils, util.NewEndpoint(name, path, path))
 
 	return v
 }
@@ -66,13 +65,13 @@ func (echo) MatchImportPath(path string) bool {
 	return strings.HasPrefix(path, "github.com/labstack/echo/")
 }
 
-func (echo) Extract(node ast.Node) []endpoint.Endpoint {
+func (echo) Extract(node ast.Node) []util.Endpoint {
 	var v visitor
 	ast.Walk(&v, node)
 	// Sort
-	return v.endpoints
+	return v.utils
 }
 
-func New() framework.Framework {
+func New() util.Framework {
 	return echo{}
 }
