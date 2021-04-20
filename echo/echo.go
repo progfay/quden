@@ -53,7 +53,7 @@ func (converter) ToEndpoint(node ast.Node) *endpoint.Endpoint {
 		return nil
 	}
 
-	return endpoint.New(name, path)
+	return endpoint.New(name, path, path)
 }
 
 func New() *framework.Framework {

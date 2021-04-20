@@ -23,28 +23,6 @@ func isRegisterMethod(name string) bool {
 
 type converter struct{}
 
-//  0  *ast.CallExpr {
-//  1  .  Fun: *ast.SelectorExpr {
-//  2  .  .  X: *ast.Ident {
-//  3  .  .  .  NamePos: -
-//  4  .  .  .  Name: "pat"
-//  5  .  .  }
-//  6  .  .  Sel: *ast.Ident {
-//  7  .  .  .  NamePos: -
-//  8  .  .  .  Name: "Get"
-//  9  .  .  }
-// 10  .  }
-// 11  .  Lparen: -
-// 12  .  Args: []ast.Expr (len = 1) {
-// 13  .  .  0: *ast.BasicLit {
-// 14  .  .  .  ValuePos: -
-// 15  .  .  .  Kind: STRING
-// 16  .  .  .  Value: "\"/users/:user_id\""
-// 17  .  .  }
-// 18  .  }
-// 19  .  Ellipsis: -
-// 20  .  Rparen: -
-// 21  }
 func (converter) ToEndpoint(node ast.Node) *endpoint.Endpoint {
 	callExpr, ok := node.(*ast.CallExpr)
 	if !ok {
@@ -80,7 +58,7 @@ func (converter) ToEndpoint(node ast.Node) *endpoint.Endpoint {
 		return nil
 	}
 
-	return endpoint.New(strings.ToUpper(name), path)
+	return endpoint.New(strings.ToUpper(name), path, path)
 }
 
 func New() *framework.Framework {
