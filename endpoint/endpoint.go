@@ -8,8 +8,8 @@ type Endpoint struct {
 	RegExp string
 }
 
-func New(method, path, regexp string) *Endpoint {
-	return &Endpoint{
+func New(method, path, regexp string) Endpoint {
+	return Endpoint{
 		Method: method,
 		Path:   path,
 		RegExp: regexp,

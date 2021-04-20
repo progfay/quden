@@ -41,22 +41,22 @@ func Test_NodeConverter_ToEndpoint(t *testing.T) {
 	for _, testcase := range []struct {
 		name string
 		in   string
-		want *endpoint.Endpoint
+		want []endpoint.Endpoint
 	}{
 		{
 			name: "Static",
 			in:   `e.GET("/users", handler)`,
-			want: endpoint.New("GET", "/users", "/users"),
+			want: []endpoint.Endpoint{endpoint.New("GET", "/users", "/users")},
 		},
 		{
 			name: "Param",
 			in:   `e.DELETE("/users/:user_id", handler)`,
-			want: endpoint.New("DELETE", "/users/:user_id", "/users/:user_id"),
+			want: []endpoint.Endpoint{endpoint.New("DELETE", "/users/:user_id", "/users/:user_id")},
 		},
 		{
 			name: "Match Any",
 			in:   `e.POST("/users/files/*", handler)`,
-			want: endpoint.New("POST", "/users/files/*", "/users/files/*"),
+			want: []endpoint.Endpoint{endpoint.New("POST", "/users/files/*", "/users/files/*")},
 		},
 		{
 			name: "Non API Endpoint Register",
@@ -71,7 +71,7 @@ func Test_NodeConverter_ToEndpoint(t *testing.T) {
 				return
 			}
 
-			got := framework.NewNodeConverter().ToEndpoint(expr)
+			got := framework.Extract(expr)
 			if !reflect.DeepEqual(got, testcase.want) {
 				t.Errorf("want %q, got %q", testcase.want, got)
 			}

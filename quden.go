@@ -2,7 +2,6 @@ package quden
 
 import (
 	"fmt"
-	"go/ast"
 	"go/parser"
 	"go/token"
 	"io"
@@ -12,19 +11,18 @@ import (
 	"github.com/progfay/quden/echo"
 	"github.com/progfay/quden/framework"
 	"github.com/progfay/quden/goji"
-	"github.com/progfay/quden/visitor"
 )
 
 func formatBundle(regexp, name string) string {
 	return fmt.Sprintf("[[bundle]]\nregexp = %q\nname = %q", regexp, name)
 }
 
-var frameworks = []*framework.Framework{
+var frameworks = []framework.Framework{
 	echo.New(),
 	goji.New(),
 }
 
-func findMatchFramework(path string) *framework.Framework {
+func findMatchFramework(path string) framework.Framework {
 	for _, framework := range frameworks {
 		if framework.MatchImportPath(path) {
 			return framework
@@ -34,8 +32,6 @@ func findMatchFramework(path string) *framework.Framework {
 }
 
 func Run(w io.Writer, files []string) {
-	v := visitor.New()
-
 	for _, file := range files {
 		fset := token.NewFileSet()
 		f, _ := parser.ParseFile(fset, file, nil, parser.Mode(0))
@@ -49,15 +45,11 @@ func Run(w io.Writer, files []string) {
 
 			framework := findMatchFramework(path)
 			if framework != nil {
-				v.AddNodeConverter(framework.NewNodeConverter())
+				endpoints := framework.Extract(f)
+				for _, endpoint := range endpoints {
+					fmt.Fprintln(w, endpoint.String())
+				}
 			}
 		}
-
-		ast.Walk(v, f)
-	}
-
-	endpoints := v.GetEndpoints()
-	for _, endpoint := range endpoints {
-		fmt.Fprintln(w, endpoint.String())
 	}
 }

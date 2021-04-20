@@ -21,48 +21,58 @@ func isRegisterMethod(name string) bool {
 	return false
 }
 
-type converter struct{}
+type visitor struct{
+	endpoints []endpoint.Endpoint
+}
 
-func (converter) ToEndpoint(node ast.Node) *endpoint.Endpoint {
+func (v *visitor) Visit(node ast.Node) ast.Visitor {
 	callExpr, ok := node.(*ast.CallExpr)
 	if !ok {
-		return nil
+		return v
 	}
 
 	if len(callExpr.Args) < 1 {
-		return nil
+		return v
 	}
 
 	firstArg, ok := callExpr.Args[0].(*ast.BasicLit)
 	if !ok || firstArg.Kind != token.STRING {
-		return nil
+		return v
 	}
 
 	path, err := strconv.Unquote(firstArg.Value)
 	if err != nil || !strings.HasPrefix(path, "/") {
-		return nil
+		return v
 	}
 
 	selectorExpr, ok := callExpr.Fun.(*ast.SelectorExpr)
 	if !ok {
-		return nil
+		return v
 	}
 
 	name := selectorExpr.Sel.Name
 	if !isRegisterMethod(name) {
-		return nil
+		return v
 	}
 
-	return endpoint.New(name, path, path)
+	v.endpoints = append(v.endpoints, endpoint.New(name, path, path))
+
+	return v
 }
 
-func New() *framework.Framework {
-	return &framework.Framework{
-		MatchImportPath: func(path string) bool {
-			return strings.HasPrefix(path, "github.com/labstack/echo/")
-		},
-		NewNodeConverter: func() framework.NodeConverter {
-			return converter{}
-		},
-	}
+type echo struct {}
+
+func (echo) MatchImportPath(path string) bool {
+	return strings.HasPrefix(path, "github.com/labstack/echo/")
+}
+
+func (echo) Extract(node ast.Node) []endpoint.Endpoint {
+	var v visitor
+	ast.Walk(&v, node)
+	// Sort
+	return v.endpoints
+}
+
+func New() framework.Framework {
+	return echo{}
 }
