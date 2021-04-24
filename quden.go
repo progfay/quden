@@ -10,6 +10,7 @@ import (
 
 	"github.com/progfay/quden/echo"
 	"github.com/progfay/quden/goji"
+	"github.com/progfay/quden/gorilla"
 	"github.com/progfay/quden/util"
 )
 
@@ -20,6 +21,7 @@ func formatBundle(regexp, name string) string {
 var utils = []util.Framework{
 	echo.New(),
 	goji.New(),
+	gorilla.New(),
 }
 
 func findMatchFramework(path string) util.Framework {
