@@ -20,7 +20,7 @@ func isRegisterMethod(name string) bool {
 	return false
 }
 
-type visitor struct{
+type visitor struct {
 	endpoints []util.Endpoint
 }
 
@@ -64,7 +64,7 @@ func (v *visitor) Visit(node ast.Node) ast.Visitor {
 	return v
 }
 
-type goji struct {}
+type goji struct{}
 
 func (goji) MatchImportPath(path string) bool {
 	return path == "goji.io/pat"

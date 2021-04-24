@@ -20,7 +20,7 @@ func isRegisterMethod(name string) bool {
 	return false
 }
 
-type visitor struct{
+type visitor struct {
 	utils []util.Endpoint
 }
 
@@ -59,7 +59,7 @@ func (v *visitor) Visit(node ast.Node) ast.Visitor {
 	return v
 }
 
-type echo struct {}
+type echo struct{}
 
 func (echo) MatchImportPath(path string) bool {
 	return strings.HasPrefix(path, "github.com/labstack/echo/")
