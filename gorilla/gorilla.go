@@ -25,7 +25,7 @@ func (gorilla) Extract(node ast.Node) []util.Endpoint {
 	ast.Walk(&v, node)
 	// Sort
 
-	endpoints := make([]util.Endpoint, 0)
+	var endpoints []util.Endpoint
 	for _, inst := range v.instanceMap {
 		if !inst.isHandled {
 			continue

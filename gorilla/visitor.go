@@ -37,7 +37,7 @@ func (v *visitor) visit(callExpr *ast.CallExpr) *instance {
 	case *ast.CallExpr:
 		if inst := v.visit(x); inst != nil {
 			ret := inst.Call(selectorExpr.Sel.Name, callExpr.Args...)
-			if ret != inst {
+			if ret != nil && ret != inst {
 				v.instanceMap[callExpr] = ret
 			}
 			return ret
@@ -66,7 +66,7 @@ func (v *visitor) visit(callExpr *ast.CallExpr) *instance {
 	}
 	if inst := v.visit(rh); inst != nil {
 		ret := inst.Call(selectorExpr.Sel.Name, callExpr.Args...)
-		if ret != inst {
+		if ret != nil && ret != inst {
 			v.instanceMap[callExpr] = ret
 		}
 		return ret
@@ -76,11 +76,6 @@ func (v *visitor) visit(callExpr *ast.CallExpr) *instance {
 
 func (v *visitor) Visit(node ast.Node) ast.Visitor {
 	switch node := node.(type) {
-	case *ast.ImportSpec:
-		if node.Name == nil {
-			return v
-		}
-
 	case *ast.AssignStmt:
 		for _, rh := range node.Rhs {
 			if callExpr, ok := rh.(*ast.CallExpr); ok {
