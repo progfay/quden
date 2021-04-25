@@ -20,27 +20,27 @@ func (gorilla) MatchImportPath(path string) bool {
 
 func (gorilla) Extract(node ast.Node) []util.Endpoint {
 	v := visitor{
-		instanceMap: make(map[*ast.CallExpr]*instance),
+		instanceMap: make(map[*ast.CallExpr]instance),
 	}
 	ast.Walk(&v, node)
 	// Sort
 
 	var endpoints []util.Endpoint
-	for _, inst := range v.instanceMap {
-		if !inst.isHandled {
-			continue
-		}
+	// for _, inst := range v.instanceMap {
+	// 	if !inst.isHandled {
+	// 		continue
+	// 	}
 
-		p := inst.GetPath()
-		if inst.methods == nil {
-			endpoints = append(endpoints, util.NewEndpoint("*", p, p))
-			continue
-		}
+	// 	p := inst.GetPath()
+	// 	if inst.methods == nil {
+	// 		endpoints = append(endpoints, util.NewEndpoint("*", p, p))
+	// 		continue
+	// 	}
 
-		for _, method := range inst.methods {
-			endpoints = append(endpoints, util.NewEndpoint(method, p, p))
-		}
-	}
+	// 	for _, method := range inst.methods {
+	// 		endpoints = append(endpoints, util.NewEndpoint(method, p, p))
+	// 	}
+	// }
 	return endpoints
 }
 

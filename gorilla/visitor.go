@@ -5,10 +5,10 @@ import (
 )
 
 type visitor struct {
-	instanceMap map[*ast.CallExpr]*instance
+	instanceMap map[*ast.CallExpr]instance
 }
 
-func (v *visitor) visit(callExpr *ast.CallExpr) *instance {
+func (v *visitor) visit(callExpr *ast.CallExpr) instance {
 	if callExpr == nil {
 		return nil
 	}
