@@ -71,7 +71,7 @@ func Test_NodeConverter_ToEndpoint(t *testing.T) {
 		},
 		{
 			name: "With 2 lines",
-			in:   []string{
+			in: []string{
 				`r := mux.NewRouter()`,
 				`r.HandleFunc("/users", handler).Methods("GET")`,
 			},
@@ -79,7 +79,7 @@ func Test_NodeConverter_ToEndpoint(t *testing.T) {
 		},
 		{
 			name: "Subrouter",
-			in:   []string{
+			in: []string{
 				`r := mux.NewRouter()`,
 				`l := r.PathPrefix("/users").Subrouter()`,
 				`l.Methods("GET").HandlerFunc(handler)`,
