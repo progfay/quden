@@ -131,8 +131,7 @@ func (route *Route) Subrouter(args ...ast.Expr) *Router {
 
 	router := &Router{
 		matchers: matcher,
-		subs:     []*Router{},
-		routes:   []*Route{},
+		subs:     []instance{},
 	}
 
 	route.router.subs = append(route.router.subs, router)

@@ -6,9 +6,7 @@ import (
 
 type Router struct {
 	matchers []matcher
-
-	subs   []*Router
-	routes []*Route
+	subs     []instance
 }
 
 func (router *Router) Call(name string, args ...ast.Expr) instance {
@@ -93,6 +91,6 @@ func (router *Router) NewRoute(args ...ast.Expr) *Route {
 		isHandled: false,
 	}
 
-	router.routes = append(router.routes, route)
+	router.subs = append(router.subs, route)
 	return route
 }
