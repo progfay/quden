@@ -26,21 +26,13 @@ func (gorilla) Extract(node ast.Node) []util.Endpoint {
 	// Sort
 
 	var endpoints []util.Endpoint
-	// for _, inst := range v.instanceMap {
-	// 	if !inst.isHandled {
-	// 		continue
-	// 	}
-
-	// 	p := inst.GetPath()
-	// 	if inst.methods == nil {
-	// 		endpoints = append(endpoints, util.NewEndpoint("*", p, p))
-	// 		continue
-	// 	}
-
-	// 	for _, method := range inst.methods {
-	// 		endpoints = append(endpoints, util.NewEndpoint(method, p, p))
-	// 	}
-	// }
+	for _, inst := range v.instanceMap {
+		route, ok := inst.(*Route)
+		if !ok || !route.isHandled {
+			continue
+		}
+		log.Printf("%#v\n", route)
+	}
 	return endpoints
 }
 

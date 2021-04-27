@@ -12,12 +12,16 @@ type Router struct {
 }
 
 func (router *Router) Call(name string, args ...ast.Expr) instance {
+	if router == nil {
+		return nil
+	}
+
 	switch name {
 	case "HandleFunc":
 		return router.HandleFunc(args...)
 
 	case "PathPrefix":
-		return router.HandleFunc(args...)
+		return router.PathPrefix(args...)
 
 	case "Path":
 		return router.Path(args...)
@@ -76,7 +80,7 @@ func (router *Router) Methods(args ...ast.Expr) *Route {
 // Subrouter emulate behavior of mux.Router.NewRoute
 // Ref. https://pkg.go.dev/github.com/gorilla/mux#Router.NewRoute
 func (router *Router) NewRoute(args ...ast.Expr) *Route {
-	if len(args) != 0 {
+	if router == nil || len(args) != 0 {
 		return nil
 	}
 

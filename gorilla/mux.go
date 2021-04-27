@@ -1,6 +1,8 @@
 package gorilla
 
-import "go/ast"
+import (
+	"go/ast"
+)
 
 var muxInstance instance = &mux{}
 

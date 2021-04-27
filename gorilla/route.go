@@ -14,6 +14,10 @@ type Route struct {
 }
 
 func (route *Route) Call(name string, args ...ast.Expr) instance {
+	if route == nil {
+		return nil
+	}
+
 	switch name {
 	case "PathPrefix":
 		return route.PathPrefix(args...)
@@ -38,7 +42,7 @@ func (route *Route) Call(name string, args ...ast.Expr) instance {
 // PathPrefix emulate behavior of mux.Route.PathPrefix
 // Ref. https://pkg.go.dev/github.com/gorilla/mux#Route.PathPrefix
 func (route *Route) PathPrefix(args ...ast.Expr) *Route {
-	if len(args) != 1 {
+	if route == nil || len(args) != 1 {
 		return nil
 	}
 
@@ -59,7 +63,7 @@ func (route *Route) PathPrefix(args ...ast.Expr) *Route {
 // PathPrefix emulate behavior of mux.Route.Path
 // Ref. https://pkg.go.dev/github.com/gorilla/mux#Route.Path
 func (route *Route) Path(args ...ast.Expr) *Route {
-	if len(args) != 1 {
+	if route == nil || len(args) != 1 {
 		return nil
 	}
 
@@ -80,6 +84,10 @@ func (route *Route) Path(args ...ast.Expr) *Route {
 // Methods emulate behavior of mux.Route.Methods
 // Ref. https://pkg.go.dev/github.com/gorilla/mux#Route.Methods
 func (route *Route) Methods(args ...ast.Expr) *Route {
+	if route == nil {
+		return nil
+	}
+
 	methods := make([]string, len(args))
 
 	for i, arg := range args {
@@ -103,7 +111,7 @@ func (route *Route) Methods(args ...ast.Expr) *Route {
 // HandlerFunc emulate behavior of mux.Route.HandlerFunc
 // Ref. https://pkg.go.dev/github.com/gorilla/mux#Route.HandlerFunc
 func (route *Route) HandlerFunc(args ...ast.Expr) *Route {
-	if len(args) != 1 {
+	if route == nil || len(args) != 1 {
 		return nil
 	}
 
@@ -114,7 +122,7 @@ func (route *Route) HandlerFunc(args ...ast.Expr) *Route {
 // Subrouter emulate behavior of mux.Route.Subrouter
 // Ref. https://pkg.go.dev/github.com/gorilla/mux#Route.Subrouter
 func (route *Route) Subrouter(args ...ast.Expr) *Router {
-	if len(args) != 0 {
+	if route == nil || len(args) != 0 {
 		return nil
 	}
 
