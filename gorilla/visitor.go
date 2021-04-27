@@ -26,6 +26,20 @@ func (v *visitor) visit(callExpr *ast.CallExpr) instance {
 		return nil
 	}
 
+	for _, arg := range callExpr.Args {
+		arg, ok := arg.(*ast.CallExpr)
+		if !ok {
+			continue
+		}
+
+		if inst := v.visit(arg); inst != nil {
+			ret := inst.Call(selectorExpr.Sel.Name, callExpr.Args...)
+			if ret != nil && ret != inst {
+				v.instanceMap[callExpr] = ret
+			}
+		}
+	}
+
 	switch x := selectorExpr.X.(type) {
 	case *ast.Ident:
 		if x.Name == "mux" && selectorExpr.Sel.Name == "NewRouter" {
