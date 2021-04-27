@@ -23,17 +23,26 @@ func (gorilla) Extract(node ast.Node) []util.Endpoint {
 		instanceMap: make(map[*ast.CallExpr]instance),
 	}
 	ast.Walk(&v, node)
-	// Sort
-
 	var endpoints []util.Endpoint
-	for _, inst := range v.instanceMap {
-		route, ok := inst.(*Route)
-		if !ok || !route.isHandled {
-			continue
-		}
-		log.Printf("%#v\n", route)
-	}
+	dfs(v.entrypoint.subs)
 	return endpoints
+}
+
+func dfs(insts []instance) {
+	for _, inst := range insts {
+		switch inst := inst.(type) {
+		case *mux:
+			continue
+
+		case *Route:
+			if inst.isHandled {
+				log.Printf("%#v\n", inst)
+			}
+
+		case *Router:
+			dfs(inst.subs)
+		}
+	}
 }
 
 func New() util.Framework {

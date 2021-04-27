@@ -6,6 +6,7 @@ import (
 
 type visitor struct {
 	instanceMap map[*ast.CallExpr]instance
+	entrypoint  *Router
 }
 
 func (v *visitor) visit(callExpr *ast.CallExpr) instance {
@@ -42,6 +43,31 @@ func (v *visitor) visit(callExpr *ast.CallExpr) instance {
 
 	switch x := selectorExpr.X.(type) {
 	case *ast.Ident:
+		if x.Name == "http" && selectorExpr.Sel.Name == "ListenAndServe" && len(callExpr.Args) == 2 {
+			ident, ok := callExpr.Args[1].(*ast.Ident)
+			if !ok {
+				return nil
+			}
+
+			decl, ok := ident.Obj.Decl.(*ast.AssignStmt)
+			if !ok {
+				return nil
+			}
+
+			for _, rh := range decl.Rhs {
+				rh, ok := rh.(*ast.CallExpr)
+				if !ok {
+					continue
+				}
+
+				inst := v.instanceMap[rh]
+				if router, ok := inst.(*Router); ok {
+					v.entrypoint = router
+				}
+			}
+
+			return nil
+		}
 		if x.Name == "mux" && selectorExpr.Sel.Name == "NewRouter" {
 			inst := muxInstance.Call("NewRouter", callExpr.Args...)
 			v.instanceMap[callExpr] = inst

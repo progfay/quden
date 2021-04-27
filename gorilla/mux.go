@@ -27,6 +27,6 @@ func (m *mux) NewRouter(args ...ast.Expr) *Router {
 
 	return &Router{
 		matchers: []matcher{},
-		subs:   []instance{},
+		subs:     []instance{},
 	}
 }
