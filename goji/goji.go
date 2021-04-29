@@ -9,7 +9,7 @@ import (
 	"github.com/progfay/quden/util"
 )
 
-var registerMethods = []string{"Get", "Head", "Post", "Put", "Delete", "CONNECT", "OPTIONS", "Patch"}
+var registerMethods = []string{"Get", "Head", "Post", "Put", "Delete", "Connect", "Options", "Patch"}
 
 func isRegisterMethod(name string) bool {
 	for _, method := range registerMethods {
@@ -54,12 +54,13 @@ func (v *visitor) Visit(node ast.Node) ast.Visitor {
 		return v
 	}
 
-	name := selectorExpr.Sel.Name
-	if !isRegisterMethod(name) {
+	method := selectorExpr.Sel.Name
+	if !isRegisterMethod(method) {
 		return v
 	}
 
-	v.endpoints = append(v.endpoints, util.NewEndpoint(strings.ToUpper(name), path, path))
+	name := strings.ToUpper(method) + path
+	v.endpoints = append(v.endpoints, util.NewEndpoint(name, name))
 
 	return v
 }

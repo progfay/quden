@@ -46,17 +46,17 @@ func Test_NodeConverter_ToEndpoint(t *testing.T) {
 		{
 			name: "Static Paths",
 			in:   `pat.Get("/users")`,
-			want: []util.Endpoint{util.NewEndpoint("GET", "/users", "/users")},
+			want: []util.Endpoint{util.NewEndpoint("GET /users", "GET /users")},
 		},
 		{
 			name: "Named Matches",
 			in:   `pat.Delete("/users/:user_id")`,
-			want: []util.Endpoint{util.NewEndpoint("DELETE", "/users/:user_id", "/users/:user_id")},
+			want: []util.Endpoint{util.NewEndpoint("DELETE /users/:user_id", "DELETE /users/:user_id")},
 		},
 		{
 			name: "Prefix Matches",
 			in:   `pat.Post("/users/files/*")`,
-			want: []util.Endpoint{util.NewEndpoint("POST", "/users/files/*", "/users/files/*")},
+			want: []util.Endpoint{util.NewEndpoint("POST /users/files/*", "POST /users/files/*")},
 		},
 		{
 			name: "Non API Endpoint Register",

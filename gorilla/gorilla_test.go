@@ -57,12 +57,12 @@ func Test_NodeConverter_ToEndpoint(t *testing.T) {
 		{
 			name: "Static Paths",
 			in:   []string{`mux.NewRouter().HandleFunc("/users", handler).Methods("GET")`},
-			want: []util.Endpoint{util.NewEndpoint("GET", "/users", "/users")},
+			want: []util.Endpoint{util.NewEndpoint("GET /users", "GET /users")},
 		},
 		{
 			name: "Variable Paths",
 			in:   []string{`mux.NewRouter().HandleFunc("/users/{user_id}", handler).Methods("DELETE")`},
-			want: []util.Endpoint{util.NewEndpoint("DELETE", "/users/{user_id}", "/users/{user_id}")},
+			want: []util.Endpoint{util.NewEndpoint("DELETE /users/{user_id}", "DELETE /users/{user_id}")},
 		},
 		{
 			name: "Non API Endpoint Register",
@@ -75,7 +75,7 @@ func Test_NodeConverter_ToEndpoint(t *testing.T) {
 				`r := mux.NewRouter()`,
 				`r.HandleFunc("/users", handler).Methods("GET")`,
 			},
-			want: []util.Endpoint{util.NewEndpoint("GET", "/users", "/users")},
+			want: []util.Endpoint{util.NewEndpoint("GET /users", "GET /users")},
 		},
 		{
 			name: "Subrouter",
@@ -84,7 +84,7 @@ func Test_NodeConverter_ToEndpoint(t *testing.T) {
 				`l := r.PathPrefix("/users").Subrouter()`,
 				`l.Methods("GET").HandlerFunc(handler)`,
 			},
-			want: []util.Endpoint{util.NewEndpoint("GET", "/users", "/users")},
+			want: []util.Endpoint{util.NewEndpoint("GET /users", "GET /users")},
 		},
 	} {
 		t.Run(testcase.name, func(t *testing.T) {

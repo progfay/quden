@@ -5,22 +5,28 @@ import (
 	"go/ast"
 )
 
+const bundleTemplate = `[[bundle]]
+regexp = "%s"
+name = "%s"`
+
 type Endpoint struct {
-	Method string
-	Path   string
+	Name   string
 	RegExp string
 }
 
-func NewEndpoint(method, path, regexp string) Endpoint {
+func NewEndpoint(name, regexp string) Endpoint {
 	return Endpoint{
-		Method: method,
-		Path:   path,
+		Name:   name,
 		RegExp: regexp,
 	}
 }
 
+func (e *Endpoint) Format() string {
+	return fmt.Sprintf(bundleTemplate, e.RegExp, e.Name)
+}
+
 func (e *Endpoint) String() string {
-	return fmt.Sprintf("%s %s", e.Method, e.Path)
+	return e.Name
 }
 
 type Framework interface {

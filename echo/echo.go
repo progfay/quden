@@ -49,12 +49,12 @@ func (v *visitor) Visit(node ast.Node) ast.Visitor {
 		return v
 	}
 
-	name := selectorExpr.Sel.Name
-	if !isRegisterMethod(name) {
+	method := selectorExpr.Sel.Name
+	if !isRegisterMethod(method) {
 		return v
 	}
 
-	v.utils = append(v.utils, util.NewEndpoint(name, path, path))
+	v.utils = append(v.utils, util.NewEndpoint(method + path, method + path))
 
 	return v
 }

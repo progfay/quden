@@ -1,6 +1,7 @@
 package gorilla
 
 import (
+	"fmt"
 	"go/ast"
 	"go/token"
 	"strconv"
@@ -152,7 +153,10 @@ func (route *Route) ToEndpoints() []util.Endpoint {
 
 	endpoints := make([]util.Endpoint, 0, len(art.methodSet))
 	for method := range art.methodSet {
-		endpoints = append(endpoints, util.NewEndpoint(method, art.path, art.path))
+		endpoints = append(endpoints, util.NewEndpoint(
+				fmt.Sprintf("%s %s", method, art.path),
+				fmt.Sprintf("^%s %s", method, art.path),
+			))
 	}
 
 	return endpoints

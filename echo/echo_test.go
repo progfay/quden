@@ -46,17 +46,17 @@ func Test_NodeConverter_ToEndpoint(t *testing.T) {
 		{
 			name: "Static",
 			in:   `e.GET("/users", handler)`,
-			want: []util.Endpoint{util.NewEndpoint("GET", "/users", "/users")},
+			want: []util.Endpoint{util.NewEndpoint("GET /users", "GET /users")},
 		},
 		{
 			name: "Param",
 			in:   `e.DELETE("/users/:user_id", handler)`,
-			want: []util.Endpoint{util.NewEndpoint("DELETE", "/users/:user_id", "/users/:user_id")},
+			want: []util.Endpoint{util.NewEndpoint("DELETE /users/:user_id", "DELETE /users/:user_id")},
 		},
 		{
 			name: "Match Any",
 			in:   `e.POST("/users/files/*", handler)`,
-			want: []util.Endpoint{util.NewEndpoint("POST", "/users/files/*", "/users/files/*")},
+			want: []util.Endpoint{util.NewEndpoint("POST /users/files/*", "POST /users/files/*")},
 		},
 		{
 			name: "Non API Endpoint Register",

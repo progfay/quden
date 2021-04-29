@@ -14,10 +14,6 @@ import (
 	"github.com/progfay/quden/util"
 )
 
-func formatBundle(regexp, name string) string {
-	return fmt.Sprintf("[[bundle]]\nregexp = %q\nname = %q", regexp, name)
-}
-
 var utils = []util.Framework{
 	echo.New(),
 	goji.New(),
@@ -49,7 +45,7 @@ func Run(w io.Writer, files []string) {
 			if util != nil {
 				endpoints := util.Extract(f)
 				for _, endpoint := range endpoints {
-					fmt.Fprintln(w, endpoint.String())
+					fmt.Fprintln(w, endpoint.Format() + "\n")
 				}
 			}
 		}
