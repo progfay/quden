@@ -21,6 +21,10 @@ func (gorilla) MatchImportPath(path string) bool {
 func (gorilla) Extract(node ast.Node) []util.Endpoint {
 	v := visitor{instanceMap: make(map[*ast.CallExpr]instance)}
 	ast.Walk(&v, node)
+
+	if v.entrypoint == nil {
+		return nil
+	}
 	return dfs(v.entrypoint)
 }
 

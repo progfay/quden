@@ -17,7 +17,9 @@ const template = `package main
 import "github.com/gorilla/mux"
 
 func main() {
+	r := mux.NewRouter()
 	%s
+	log.Fatal(http.ListenAndServe(":8000", r))
 }
 `
 
@@ -56,12 +58,12 @@ func Test_NodeConverter_ToEndpoint(t *testing.T) {
 	}{
 		{
 			name: "Static Paths",
-			in:   []string{`mux.NewRouter().HandleFunc("/users", handler).Methods("GET")`},
+			in:   []string{`r.HandleFunc("/users", handler).Methods("GET")`},
 			want: []util.Endpoint{util.NewEndpoint("GET /users", "GET /users")},
 		},
 		{
 			name: "Variable Paths",
-			in:   []string{`mux.NewRouter().HandleFunc("/users/{user_id}", handler).Methods("DELETE")`},
+			in:   []string{`r.HandleFunc("/users/{user_id}", handler).Methods("DELETE")`},
 			want: []util.Endpoint{util.NewEndpoint("DELETE /users/{user_id}", "DELETE /users/{user_id}")},
 		},
 		{
@@ -70,17 +72,8 @@ func Test_NodeConverter_ToEndpoint(t *testing.T) {
 			want: nil,
 		},
 		{
-			name: "With 2 lines",
-			in: []string{
-				`r := mux.NewRouter()`,
-				`r.HandleFunc("/users", handler).Methods("GET")`,
-			},
-			want: []util.Endpoint{util.NewEndpoint("GET /users", "GET /users")},
-		},
-		{
 			name: "Subrouter",
 			in: []string{
-				`r := mux.NewRouter()`,
 				`l := r.PathPrefix("/users").Subrouter()`,
 				`l.Methods("GET").HandlerFunc(handler)`,
 			},
