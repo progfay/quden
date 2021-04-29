@@ -59,12 +59,12 @@ func Test_NodeConverter_ToEndpoint(t *testing.T) {
 		{
 			name: "Static Paths",
 			in:   []string{`r.HandleFunc("/users", handler).Methods("GET")`},
-			want: []util.Endpoint{util.NewEndpoint("GET /users", "GET /users")},
+			want: []util.Endpoint{util.NewEndpoint("GET /users", "^GET /users$")},
 		},
 		{
 			name: "Variable Paths",
 			in:   []string{`r.HandleFunc("/users/{user_id}", handler).Methods("DELETE")`},
-			want: []util.Endpoint{util.NewEndpoint("DELETE /users/{user_id}", "DELETE /users/{user_id}")},
+			want: []util.Endpoint{util.NewEndpoint("DELETE /users/{user_id}", "^DELETE /users/[^/]+$")},
 		},
 		{
 			name: "Non API Endpoint Register",
@@ -77,7 +77,20 @@ func Test_NodeConverter_ToEndpoint(t *testing.T) {
 				`l := r.PathPrefix("/users").Subrouter()`,
 				`l.Methods("GET").HandlerFunc(handler)`,
 			},
-			want: []util.Endpoint{util.NewEndpoint("GET /users", "GET /users")},
+			want: []util.Endpoint{util.NewEndpoint("GET /users", "^GET /users")},
+		},
+		{
+			name: "Multiple methods",
+			in:   []string{`r.HandleFunc("/users", handler).Methods("GET", "POST")`},
+			want: []util.Endpoint{
+				util.NewEndpoint("GET /users", "^GET /users$"),
+				util.NewEndpoint("POST /users", "^POST /users$"),
+			},
+		},
+		{
+			name: "No specified methods",
+			in:   []string{`r.HandleFunc("/users", handler)`},
+			want: []util.Endpoint{util.NewEndpoint("/users", "^[^ ]+ /users$")},
 		},
 	} {
 		t.Run(testcase.name, func(t *testing.T) {

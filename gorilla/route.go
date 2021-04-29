@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"go/ast"
 	"go/token"
+	"sort"
 	"strconv"
 	"strings"
 
@@ -160,12 +161,27 @@ func (route *Route) ToEndpoints() []util.Endpoint {
 		pattern += "$"
 	}
 
-	endpoints := make([]util.Endpoint, 0, len(art.methodSet))
+	if art.methodSet == nil {
+		return []util.Endpoint{
+			util.NewEndpoint(
+				name,
+				fmt.Sprintf("^[^ ]+ %s", pattern),
+			),
+		}
+	}
+
+	methods := make([]string, 0, len(art.methodSet))
 	for method := range art.methodSet {
-		endpoints = append(endpoints, util.NewEndpoint(
+		methods = append(methods, method)
+	}
+	sort.Strings(methods)
+
+	endpoints := make([]util.Endpoint, len(art.methodSet))
+	for i, method := range methods {
+		endpoints[i] = util.NewEndpoint(
 			fmt.Sprintf("%s %s", method, name),
-			fmt.Sprintf("%s %s", method, name),
-		))
+			fmt.Sprintf("^%s %s", method, pattern),
+		)
 	}
 
 	return endpoints

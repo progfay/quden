@@ -1,6 +1,8 @@
 package gorilla
 
-import "strings"
+import (
+	"strings"
+)
 
 type artifact struct {
 	path           string
@@ -13,16 +15,8 @@ func newArtifact() *artifact {
 	return &artifact{
 		path:           "/",
 		pathTerminated: false,
-		methodSet: map[string]struct{}{
-			"GET":     {},
-			"POST":    {},
-			"PATCH":   {},
-			"PUT":     {},
-			"DELETE":  {},
-			"HEAD":    {},
-			"OPTIONS": {},
-		},
-		isInvalid: false,
+		methodSet:      nil,
+		isInvalid:      false,
 	}
 }
 
@@ -92,6 +86,12 @@ func newMethodsMatcher(methodList []string) methodsMatcher {
 
 func (matcher methodsMatcher) Process(art *artifact) {
 	if art.isInvalid {
+		return
+	}
+
+	if art.methodSet == nil {
+		art.methodSet = matcher.methodSet
+		art.isInvalid = len(art.methodSet) == 0
 		return
 	}
 
