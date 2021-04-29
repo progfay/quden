@@ -151,11 +151,20 @@ func (route *Route) ToEndpoints() []util.Endpoint {
 		matcher.Process(art)
 	}
 
+	name, pattern, err := parsePath(art.path)
+	if err != nil {
+		return nil
+	}
+
+	if art.pathTerminated {
+		pattern += "$"
+	}
+
 	endpoints := make([]util.Endpoint, 0, len(art.methodSet))
 	for method := range art.methodSet {
 		endpoints = append(endpoints, util.NewEndpoint(
-				fmt.Sprintf("%s %s", method, art.path),
-				fmt.Sprintf("^%s %s", method, art.path),
+				fmt.Sprintf("%s %s", method, name),
+				fmt.Sprintf("%s %s", method, name),
 			))
 	}
 
