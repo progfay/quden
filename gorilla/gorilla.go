@@ -19,29 +19,31 @@ func (gorilla) MatchImportPath(path string) bool {
 }
 
 func (gorilla) Extract(node ast.Node) []util.Endpoint {
-	v := visitor{
-		instanceMap: make(map[*ast.CallExpr]instance),
-	}
+	v := visitor{instanceMap: make(map[*ast.CallExpr]instance)}
 	ast.Walk(&v, node)
-	var endpoints []util.Endpoint
-	dfs(v.entrypoint.subs)
-	return endpoints
+	return dfs(v.entrypoint)
 }
 
-func dfs(insts []instance) {
-	for _, inst := range insts {
-		switch inst := inst.(type) {
-		case *mux:
-			continue
+func dfs(inst instance) []util.Endpoint {
+	switch inst := inst.(type) {
+	case *mux:
+		return nil
 
-		case *Route:
-			if inst.isHandled {
-				log.Printf("%#v\n", inst)
-			}
-
-		case *Router:
-			dfs(inst.subs)
+	case *Route:
+		if !inst.isHandled {
+			return nil
 		}
+		return inst.ToEndpoints()
+
+	case *Router:
+		var endpoints []util.Endpoint
+		for _, sub := range inst.subs {
+			endpoints = append(endpoints, dfs(sub)...)
+		}
+		return endpoints
+
+	default:
+		return nil
 	}
 }
 

@@ -1,36 +1,105 @@
 package gorilla
 
-type matcherMode int8
+import "strings"
 
-const (
-	pathMode matcherMode = iota
-	pathPrefixMode
-	methodsMode
-)
-
-type matcher struct {
-	mode    matcherMode
-	pattern string
-	methods []string
+type artifact struct {
+	path           string
+	pathTerminated bool
+	methodSet      map[string]struct{}
+	isInvalid      bool
 }
 
-func newPathMatcher(pattern string) matcher {
-	return matcher{
-		mode:    pathMode,
-		pattern: pattern,
+func newArtifact() *artifact {
+	return &artifact{
+		path:           "/",
+		pathTerminated: false,
+		methodSet: map[string]struct{}{
+			"GET":     {},
+			"POST":    {},
+			"PATCH":   {},
+			"PUT":     {},
+			"DELETE":  {},
+			"HEAD":    {},
+			"OPTIONS": {},
+		},
+		isInvalid: false,
 	}
 }
 
-func newPathPrefixMatcher(pattern string) matcher {
-	return matcher{
-		mode:    pathPrefixMode,
-		pattern: pattern,
+type matcher interface {
+	Process(art *artifact)
+}
+
+type pathMatcher struct {
+	path string
+}
+
+func newPathMatcher(path string) pathMatcher {
+	return pathMatcher{
+		path: path,
 	}
 }
 
-func newMethodsMatcher(methods []string) matcher {
-	return matcher{
-		mode:    methodsMode,
-		methods: methods,
+func (matcher pathMatcher) Process(art *artifact) {
+	if art.isInvalid || art.pathTerminated {
+		art.isInvalid = true
+		return
 	}
+
+	art.path = strings.TrimRight(art.path, "/") + strings.TrimRight(matcher.path, "/")
+	if art.path == "" {
+		art.path = "/"
+	}
+	art.pathTerminated = true
+}
+
+type pathPrefixMatcher struct {
+	pathPrefix string
+}
+
+func newPathPrefixMatcher(pathPrefix string) pathPrefixMatcher {
+	return pathPrefixMatcher{
+		pathPrefix: pathPrefix,
+	}
+}
+
+func (matcher pathPrefixMatcher) Process(art *artifact) {
+	if art.isInvalid || art.pathTerminated {
+		art.isInvalid = true
+		return
+	}
+
+	art.path = strings.TrimRight(art.path, "/") + strings.TrimRight(matcher.pathPrefix, "/")
+	if art.path == "" {
+		art.path = "/"
+	}
+}
+
+type methodsMatcher struct {
+	methodSet map[string]struct{}
+}
+
+func newMethodsMatcher(methodList []string) methodsMatcher {
+	methodSet := map[string]struct{}{}
+	for _, method := range methodList {
+		methodSet[strings.ToUpper(method)] = struct{}{}
+	}
+
+	return methodsMatcher{
+		methodSet: methodSet,
+	}
+}
+
+func (matcher methodsMatcher) Process(art *artifact) {
+	if art.isInvalid {
+		return
+	}
+
+	for method := range art.methodSet {
+		if _, ok := matcher.methodSet[method]; !ok {
+			delete(art.methodSet, method)
+		}
+	}
+
+	art.isInvalid = len(art.methodSet) == 0
 }

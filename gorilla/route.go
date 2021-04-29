@@ -5,6 +5,8 @@ import (
 	"go/token"
 	"strconv"
 	"strings"
+
+	"github.com/progfay/quden/util"
 )
 
 type Route struct {
@@ -136,4 +138,22 @@ func (route *Route) Subrouter(args ...ast.Expr) *Router {
 
 	route.router.subs = append(route.router.subs, router)
 	return router
+}
+
+func (route *Route) ToEndpoints() []util.Endpoint {
+	if route == nil {
+		return nil
+	}
+
+	art := newArtifact()
+	for _, matcher := range route.matchers {
+		matcher.Process(art)
+	}
+
+	endpoints := make([]util.Endpoint, 0, len(art.methodSet))
+	for method := range art.methodSet {
+		endpoints = append(endpoints, util.NewEndpoint(method, art.path, art.path))
+	}
+
+	return endpoints
 }
