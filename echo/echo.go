@@ -54,7 +54,7 @@ func (v *visitor) Visit(node ast.Node) ast.Visitor {
 		return v
 	}
 
-	v.utils = append(v.utils, util.NewEndpoint(method + path, method + path))
+	v.utils = append(v.utils, util.NewEndpoint(method+path, method+path))
 
 	return v
 }

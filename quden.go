@@ -45,7 +45,7 @@ func Run(w io.Writer, files []string) {
 			if util != nil {
 				endpoints := util.Extract(f)
 				for _, endpoint := range endpoints {
-					fmt.Fprintln(w, endpoint.Format() + "\n")
+					fmt.Fprintln(w, endpoint.Format()+"\n")
 				}
 			}
 		}
