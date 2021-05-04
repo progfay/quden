@@ -157,9 +157,10 @@ func (route *Route) ToEndpoints() []util.Endpoint {
 		return nil
 	}
 
-	if art.pathTerminated {
-		pattern += "$"
+	if !art.pathTerminated {
+		pattern += `\B*`
 	}
+	pattern += `\b`
 
 	if art.methodSet == nil {
 		return []util.Endpoint{
